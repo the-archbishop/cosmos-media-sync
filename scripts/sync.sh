@@ -46,10 +46,10 @@ RSYNC_SSH="ssh ${SSH_OPTS[*]}"
 # Determine destination
 case "$APP_NAME" in
   radarr)
-    LOCAL_DEST="$LOCAL_BASE/movies"
+    LOCAL_DEST="$LOCAL_BASE/$MOVIES_DEST"
     ;;
   sonarr)
-    LOCAL_DEST="$LOCAL_BASE/shows"
+    LOCAL_DEST="$LOCAL_BASE/$SHOWS_DEST"
     ;;
   *)
     log "Unknown app: $APP_NAME"
