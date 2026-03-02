@@ -66,11 +66,11 @@ while IFS= read -r -d "" p; do
 
   if [ -d "$item" ]; then
     if [ ! -f "$item/$MARKER" ]; then
-      printf "%s\0" "$item"
+      printf "%s/***\0" "$item"
     fi
   elif [ -f "$item" ]; then
     if [ ! -f "$item.$MARKER" ]; then
-      printf "%s\0" "$item"
+      printf "%s/***\0" "$item"
     fi
   fi
 done

@@ -48,7 +48,12 @@ Daily logs are stored in `./logs` and deleted automatically after 14 days.
 
 `2026-03-02 04:52:01 [sync.sh/radarr] Syncing new items to /mnt/media/movies...`
 
-## Example Cron Job
+## Setup
+1. Clone repository
+2. Setup config/.env as above.
+3. In the scripts/ folder, execute `chmod +x sync.sh` to ensure script is executable.
+
+### Example Cron Job
 ```
 0 * * * * /home/user/repos/cosmos-media-sync/scripts/sync.sh radarr
 ```
