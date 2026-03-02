@@ -91,23 +91,47 @@ rsync -av \
   "$SEEDBOX_HOST:$APP_BASE/" \
   "$LOCAL_DEST/"
 
-log "Items to mark (count): $(tr -cd '\0' <"$REMOTE_ITEMS_TMP" | wc -c)"
+log "Items to mark (count): $(python3 -c 'import sys; print(sys.stdin.buffer.read().count(b"\0"))' <"$REMOTE_ITEMS_TMP")"
 log "Marking synced items on seedbox..."
 
 ssh "${SSH_OPTS[@]}" "$SEEDBOX_HOST" \
   REMOTE_BASE="$APP_BASE" MARKER="$MARKER" \
-  bash -s 3<"$REMOTE_ITEMS_TMP" <<'REMOTE'
+  'bash -c '"'"'
 set -euo pipefail
 cd "$REMOTE_BASE"
 
-while IFS= read -r -d "" item <&3; do
-  item="${item%/}"  # strip trailing slash if present
+while IFS= read -r -d "" item; do
+  item="${item%/}"
   if [ -d "$item" ]; then
     : > "$item/$MARKER"
   elif [ -f "$item" ]; then
     : > "$item.$MARKER"
   fi
 done
-REMOTE
+'"'"'' <"$REMOTE_ITEMS_TMP"
+
+log "Verifying markers on seedbox..."
+
+ssh "${SSH_OPTS[@]}" "$SEEDBOX_HOST" \
+  REMOTE_BASE="$APP_BASE" MARKER="$MARKER" \
+  'bash -c '"'"'
+set -euo pipefail
+cd "$REMOTE_BASE"
+
+i=0
+while IFS= read -r -d "" item; do
+  item="${item%/}"
+  if [ -d "$item" ]; then
+    if [ -f "$item/$MARKER" ]; then
+      echo "MARKED $item"
+    else
+      echo "MISSING marker: $item"
+      exit 2
+    fi
+  fi
+  i=$((i+1))
+  [ "$i" -ge 5 ] && break
+done
+'"'"'' <"$REMOTE_ITEMS_TMP"
 
 log "Finished."
