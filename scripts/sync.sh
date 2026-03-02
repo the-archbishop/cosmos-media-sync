@@ -91,22 +91,23 @@ rsync -av \
   "$SEEDBOX_HOST:$APP_BASE/" \
   "$LOCAL_DEST/"
 
+log "Items to mark (count): $(tr -cd '\0' <"$REMOTE_ITEMS_TMP" | wc -c)"
 log "Marking synced items on seedbox..."
 
-cat "$REMOTE_ITEMS_TMP" | ssh "${SSH_OPTS[@]}" "$SEEDBOX_HOST" \
+ssh "${SSH_OPTS[@]}" "$SEEDBOX_HOST" \
   REMOTE_BASE="$APP_BASE" MARKER="$MARKER" \
-  bash -lc '
+  bash -s 3<"$REMOTE_ITEMS_TMP" <<'REMOTE'
 set -euo pipefail
 cd "$REMOTE_BASE"
 
-while IFS= read -r -d "" item; do
-  item="${item%/}"   # strip trailing slash if present
+while IFS= read -r -d "" item <&3; do
+  item="${item%/}"  # strip trailing slash if present
   if [ -d "$item" ]; then
     : > "$item/$MARKER"
   elif [ -f "$item" ]; then
     : > "$item.$MARKER"
   fi
 done
-'
+REMOTE
 
 log "Finished."
