@@ -91,7 +91,12 @@ rsync -av \
   "$SEEDBOX_HOST:$APP_BASE/" \
   "$LOCAL_DEST/"
 
-log "Items to mark (count): $(python3 -c 'import sys; print(sys.stdin.buffer.read().count(b"\0"))' <"$REMOTE_ITEMS_TMP")"
+item_count="$(
+  python3 -c 'import sys; print(sys.stdin.buffer.read().count(b"\0"))' \
+    <"$REMOTE_ITEMS_TMP"
+)"
+log "Items to mark (count): $item_count"
+
 log "Marking synced items on seedbox..."
 
 ssh "${SSH_OPTS[@]}" "$SEEDBOX_HOST" \
