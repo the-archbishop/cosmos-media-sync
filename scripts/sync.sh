@@ -25,7 +25,18 @@ log() {
   echo "$(date '+%Y-%m-%d %H:%M:%S') [$SCRIPT_NAME/$APP_NAME] $*"
 }
 
+# Setup app-based locks
 exec >>"$LOG_FILE" 2>&1
+
+LOCK_DIR="$REPO_ROOT/locks"
+mkdir -p "$LOCK_DIR"
+LOCK_FILE="$LOCK_DIR/${SCRIPT_NAME}-${APP_NAME}.lock"
+
+exec 9>"$LOCK_FILE"
+if ! flock -n 9; then
+  log "Another sync for ${APP_NAME} is already running; exiting."
+  exit 0
+fi
 
 log "Starting sync for ${APP_NAME}..."
 
