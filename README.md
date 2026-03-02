@@ -50,5 +50,5 @@ Daily logs are stored in `./logs` and deleted automatically after 14 days.
 
 ## Example Cron Job
 ```
-0 * * * * /home/user/repos/media-sync/scripts/sync.sh radarr
+0 * * * * /home/user/repos/cosmos-media-sync/scripts/sync.sh radarr
 ```
