@@ -1,11 +1,17 @@
 # Cosmos Media Sync
 Sync media downloads from a remote seedbox to a local media server using rsync, with per-app support for Radarr and Sonarr.
+* Pulls new, unmarked items from the seedbox
+* Writes daily logs per app
+* Creates marker files on seedbox after successful sync
+* Uses per-app lock to prevent overlapping cron job runs
 
 ## Requirements
 * Bash 4+
-* rsync
-* SSH access to seedbox
+* `rsync`
+* `ssh`
 * SSH key authentication configured
+* `flock`
+* `python3`
 
 ## Configuration
 Create config/.env with the following variables:
@@ -36,8 +42,8 @@ The script maps apps to local folders:
 ## Re-Sync Prevention
 After a successful transfer directories and files get a marker file.
 
-* **Directories**: `<folder>/.synced_to_<local_media_server>`
-* **Files**: `<filename>.synced_to_<local_media_server>`
+* **Directories**: `<dir>/$MARKER` (example: `Some.Movie.2026/.synced_to_media_server`)
+* **Files**: `<filename>.$MARKER` (example: `SnarkyDocumentary.mp4.synced_to_media_server`)
 
 On future runs, anything with a marker is skipped.
 
@@ -48,12 +54,26 @@ Daily logs are stored in `./logs` and deleted automatically after 14 days.
 
 `2026-03-02 04:52:01 [sync.sh/radarr] Syncing new items to /mnt/media/movies...`
 
+## Concurrency
+The script uses `flock` and a per-app lock file in `./locks` to prevent overlapping runs. If a run is already in progress and cron triggers another one, the new run will log a message and exit cleanly.
+
 ## Setup
-1. Clone repository
-2. Setup config/.env as above.
-3. In the scripts/ folder, execute `chmod +x sync.sh` to ensure script is executable.
+1. Clone the repository on the media server
+2. Setup config/.env as shown above
+3. Make the script executable: `chmod +x scripts/sync.sh`
+
+### Manual Run
+```
+./scripts/sync.sh radarr
+./scripts/sync.sh sonarr
+```
 
 ### Example Cron Job
+Run Radarr sync every 10 minutes:
 ```
 0 * * * * /home/user/repos/cosmos-media-sync/scripts/sync.sh radarr
+```
+Run Sonarr sync every 10 minutes:
+```
+0 * * * * /home/user/repos/cosmos-media-sync/scripts/sync.sh sonarr
 ```
