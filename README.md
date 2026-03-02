@@ -19,6 +19,8 @@ Create config/.env with the following variables:
 SEEDBOX_HOST="user@seedbox-ip"
 REMOTE_BASE="/home/user/downloads/rtorrent"
 LOCAL_BASE="/mnt/media"
+MOVIES_DEST="movies"
+SHOWS_DEST="shows"
 KEY="/home/localuser/.ssh/id_ed25519"
 MARKER=".synced_to_<local_media_server>"
 ```
@@ -29,6 +31,8 @@ MARKER=".synced_to_<local_media_server>"
 | SEEDBOX_HOST | SSH user + host IP of the seedbox        |
 | REMOTE_BASE  | Root folder on seedbox                   |
 | LOCAL_BASE   | Base media folder on local media server  |
+| MOVIES_DEST  | Movies folder on local media server      |
+| SHOWS_DEST   | TV Shows folder on local media server    |
 | KEY          | SSH private key path                     |
 | MARKER       | Marker file name used to prevent re-sync |
 
@@ -36,8 +40,8 @@ MARKER=".synced_to_<local_media_server>"
 The script maps apps to local folders:
 | App          | Local Destination                        |
 |--------------|------------------------------------------|
-| Radarr       | $LOCAL_BASE/films                        |
-| Sonarr       | $LOCAL_BASE/shows                        |
+| Radarr       | $LOCAL_BASE/$MOVIES_DEST                 |
+| Sonarr       | $LOCAL_BASE/$SHOWS_DEST                  |
 
 ## Re-Sync Prevention
 After a successful transfer directories and files get a marker file.
