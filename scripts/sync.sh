@@ -25,9 +25,9 @@ log() {
   echo "$(date '+%Y-%m-%d %H:%M:%S') [$SCRIPT_NAME/$APP_NAME] $*"
 }
 
-# Setup app-based locks
 exec >>"$LOG_FILE" 2>&1
 
+# Setup app-based locks
 LOCK_DIR="$REPO_ROOT/locks"
 mkdir -p "$LOCK_DIR"
 LOCK_FILE="$LOCK_DIR/${SCRIPT_NAME}-${APP_NAME}.lock"
