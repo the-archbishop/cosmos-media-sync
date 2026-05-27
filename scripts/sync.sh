@@ -74,6 +74,11 @@ find . -mindepth 1 -maxdepth 1 -print0 |
 while IFS= read -r -d "" p; do
   item=${p#./}
 
+  # Skip marker files themselves
+  case "$item" in
+    *"$MARKER") continue ;;
+  esac
+
   if [ -d "$item" ]; then
     # directory item: skip if marker exists inside
     if [ ! -f "$item/$MARKER" ]; then
