@@ -74,6 +74,7 @@ find . -mindepth 1 -maxdepth 1 -print0 |
 while IFS= read -r -d "" p; do
   item=${p#./}
 
+  # Skip marker files themselves
   case "$item" in
     *"$MARKER") continue ;;
   esac
