@@ -7,7 +7,6 @@ source "$SCRIPT_DIR/../config/.env"
 SCRIPT_NAME="$(basename "$0")"
 
 APP_NAME="${1:?Usage: $0 <app_name>}"
-APP_BASE="$REMOTE_BASE/$APP_NAME"
 
 # Daily log file: ./logs/sync.sh-2026-03-02.log
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -43,13 +42,19 @@ log "Starting sync for ${APP_NAME}..."
 SSH_OPTS=(-i "$KEY" -o IdentitiesOnly=yes -o BatchMode=yes -T)
 RSYNC_SSH="ssh ${SSH_OPTS[*]}"
 
-# Determine destination
+# Determine remote source and local destination
 case "$APP_NAME" in
   radarr)
+    APP_BASE="$REMOTE_BASE/radarr"
     LOCAL_DEST="$LOCAL_BASE/$MOVIES_DEST"
     ;;
   sonarr)
+    APP_BASE="$REMOTE_BASE/sonarr"
     LOCAL_DEST="$LOCAL_BASE/$SHOWS_DEST"
+    ;;
+  books)
+    APP_BASE="$REMOTE_BASE/qbittorrent/books"
+    LOCAL_DEST="$LOCAL_BASE/$BOOKS_DEST"
     ;;
   *)
     log "Unknown app: $APP_NAME"

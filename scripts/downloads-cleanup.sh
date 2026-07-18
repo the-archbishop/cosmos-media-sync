@@ -7,7 +7,6 @@ source "$SCRIPT_DIR/../config/.env"
 SCRIPT_NAME="$(basename "$0")"
 
 APP_NAME="${1:?Usage: $0 <app_name>}"
-APP_BASE="$REMOTE_BASE/$APP_NAME"
 
 MODE="${2:---dry-run}"
 
@@ -40,13 +39,19 @@ if ! flock -n 9; then
   exit 0
 fi
 
-# Determine destination
+# Determine remote source and local staging destination
 case "$APP_NAME" in
   radarr)
+    APP_BASE="$REMOTE_BASE/radarr"
     LOCAL_DEST="$LOCAL_BASE/$MOVIES_DEST"
     ;;
   sonarr)
+    APP_BASE="$REMOTE_BASE/sonarr"
     LOCAL_DEST="$LOCAL_BASE/$SHOWS_DEST"
+    ;;
+  books)
+    APP_BASE="$REMOTE_BASE/qbittorrent/books"
+    LOCAL_DEST="$LOCAL_BASE/$BOOKS_DEST"
     ;;
   *)
     log "Unknown app: $APP_NAME"
