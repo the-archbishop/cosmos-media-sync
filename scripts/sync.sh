@@ -45,11 +45,11 @@ RSYNC_SSH="ssh ${SSH_OPTS[*]}"
 # Determine remote source and local destination
 case "$APP_NAME" in
   radarr)
-    APP_BASE="$REMOTE_BASE/radarr"
+    APP_BASE="$REMOTE_BASE/rtorrent/radarr"
     LOCAL_DEST="$LOCAL_BASE/$MOVIES_DEST"
     ;;
   sonarr)
-    APP_BASE="$REMOTE_BASE/sonarr"
+    APP_BASE="$REMOTE_BASE/rtorrent/sonarr"
     LOCAL_DEST="$LOCAL_BASE/$SHOWS_DEST"
     ;;
   books)
