@@ -52,8 +52,8 @@ case "$APP_NAME" in
     APP_BASE="$REMOTE_BASE/rtorrent/sonarr"
     LOCAL_DEST="$LOCAL_BASE/$SHOWS_DEST"
     ;;
-  books)
-    APP_BASE="$REMOTE_BASE/qbittorrent/books"
+  bookworm)
+    APP_BASE="$REMOTE_BASE/qbittorrent/bookworm"
     LOCAL_DEST="$LOCAL_BASE/$BOOKS_DEST"
     ;;
   *)
